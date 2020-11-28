@@ -134,21 +134,87 @@
                 }
             }
 
-            function editString(id) {
-                console.log(id)
-            }
+            function RowOne(
+                {
+                    id, 
+                    query, 
+                    keywords,
+                    loading,
+                    setLoading,
+                    strings,
+                    setStrings,
+                    }) {
+                const [localQuery, setLocalQuery] = React.useState(query)
+                const [localKeywords, setLocalKeywords] = React.useState(keywords)
 
-            function deleteString(id) {
-                setLoading(true)
-                fetch(`${window.location.origin}/?action=delete_keywords&id=${id}`)
-                .then( res => res.json() )
-                .then( res => {
-                    console.log(res)
-                    setLoading(false)
-                    if (res.success) {
-                        setStrings(res.content)
-                    }
-                })
+                function editString() {
+                    setLoading(true)
+                    let data = new FormData()
+                    data.append('action', 'edit_keywords')
+                    data.append('query', localQuery)
+                    data.append('keywords', localKeywords)
+                    data.append('id', id)
+                    console.log(localQuery, localKeywords, id)
+                    fetch(`${window.location.origin}`, {
+                        method: "POST",
+                        body: data
+                    })
+                    .then( res => res.json())
+                    .then( res => {
+                        console.log(res)
+                        setLoading(false)
+                        if (res.success) {
+                            setStrings(res.content)
+                        }
+                    })
+                }
+
+                function deleteString() {
+                    setLoading(true)
+                    fetch(`${window.location.origin}/?action=delete_keywords&id=${id}`)
+                    .then( res => res.json() )
+                    .then( res => {
+                        console.log(res)
+                        setLoading(false)
+                        if (res.success) {
+                            setStrings(res.content)
+                        }
+                    })
+                }
+
+                return(
+                    <TableRow key={id}>
+                        <TableCell>{id}</TableCell>
+                        <TableCell>
+                            <TextField 
+                            id="standard-basic" 
+                            label="Адрес" 
+                            value={localQuery}
+                            onChange={(e) => setLocalQuery(e.target.value)}
+                            />
+                        </TableCell>
+                        <TableCell>
+                            <TextField 
+                            id="standard-basic" 
+                            label="Ключевые слова" 
+                            value={localKeywords}
+                            onChange={(e) => setLocalKeywords(e.target.value)}
+                            />
+                        </TableCell>
+                        <TableCell>
+                        <Button
+                        onClick={() => editString()}
+                        >Изменить
+                        </Button>
+                        </TableCell>
+                        <TableCell>
+                        <Button
+                        onClick={() => deleteString()}
+                        >Удалить
+                        </Button>
+                        </TableCell>
+                    </TableRow>
+                )
             }
 
             return (
@@ -175,35 +241,15 @@
                                 <TableCell></TableCell>
                             </TableRow>
                             {strings.length !== 0 ? strings.map(item => (
-                            <TableRow>
-                                <TableCell>{item.id}</TableCell>
-                                <TableCell>
-                                    <TextField 
-                                    id="standard-basic" 
-                                    label="Адрес" 
-                                    value={item.query}
-                                    />
-                                </TableCell>
-                                <TableCell>
-                                    <TextField 
-                                    id="standard-basic" 
-                                    label="Ключевые слова" 
-                                    value={item.keywords}
-                                    />
-                                </TableCell>
-                                <TableCell>
-                                <Button
-                                onClick={() => editString(item.id)}
-                                >Изменить
-                                </Button>
-                                </TableCell>
-                                <TableCell>
-                                <Button
-                                onClick={() => deleteString(item.id)}
-                                >Удалить
-                                </Button>
-                                </TableCell>
-                            </TableRow>
+                            <RowOne 
+                                id={item.id}
+                                query={item.query}
+                                keywords={item.keywords}
+                                loading={loading}
+                                setLoading={setLoading}
+                                strings={strings}
+                                setStrings={setStrings}
+                            />
                             )) : null}
                             <TableRow>
                                 <TableCell></TableCell>

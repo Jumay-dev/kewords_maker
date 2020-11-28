@@ -84,17 +84,20 @@ class Dsmed_keywords {
             if($_POST['action'] === 'edit_keywords') {
                 if (isset($_POST['id']) && isset($_POST['query']) && isset($_POST['keywords'])) {
                     $res = $wpdb->update($table_name, array(
-                        'id' => $_POST['id'],
                         'query' => $_POST['query'],
                         'keywords' => $_POST['keywords']
-                    ));
+                    ), array('id' => $_POST['id']));
                     if($res) {
                         $ans['success'] = true;
+                        $ans['content'] = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
+                        die(json_encode($ans));
                     } else {
                         $ans['success'] = false;
+                        $ans['content'] = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
+                        die(json_encode($ans));
                     }
-                    $ans['content'] = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
-                    die(json_encode($ans));
+                } else {
+                    die(json_encode('parameters not setted'));
                 }
             }
         }
@@ -106,11 +109,13 @@ class Dsmed_keywords {
             $current_request = $_SERVER['REQUEST_URI'];
             // echo urldecode($current_request);
             $q_list = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
+            echo '<!-- Плагин DS.med keywords-->';
             foreach($q_list as $q_row) {
                 if ($q_row['query'] === urldecode($current_request)) {
                     echo '<meta name="keywords" content="' . $q_row['keywords'] . '" />';
                 }
             }
+            echo '<!-- Конец keywords-->';
         }, 0);
     }
 }
