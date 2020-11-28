@@ -96,5 +96,17 @@ class Dsmed_keywords {
                 }
             }
         }
+
+        add_action('wp_head', function() {
+            global $wpdb;
+            $current_request = $_SERVER['REQUEST_URI'];
+            // echo urldecode($current_request);
+            $q_list = $wpdb->get_results('SELECT * FROM wp_dsmed_keymaker', ARRAY_A);
+            foreach($q_list as $q_row) {
+                if ($q_row['query'] === urldecode($current_request)) {
+                    echo '<meta name="keywords" content="' . $q_row['keywords'] . '" />';
+                }
+            }
+        }, 0);
     }
 }
