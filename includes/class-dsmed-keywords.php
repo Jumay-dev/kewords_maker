@@ -25,5 +25,74 @@ class Dsmed_keywords {
 
     public function run() {
         global $wpdb;
+        $prefix = $wpdb->get_blog_prefix;
+
+        if($_SERVER['REQUEST_METHOD'] === "GET") {
+            if($_GET['action'] === 'get_keywords') {
+                $result;
+                $ans = $wpdb->get_results("SELECT * FROM 'wp_dsmed_keymaker'", ARRAY_A);
+                if ($ans) {
+                    $result['success'] = true;
+                    $result['content'] = $ans;
+                    die(json_encode($result));
+                } else {
+                    $result['success'] = false;
+                    die(json_encode($result));
+                }
+            }
+            
+            if($_GET['action'] === 'delete_keywords') {
+                $id = $_GET['id'];
+                $result;
+                $wpdb->query("DELETE FROM wp_dsmed_keymaker WHERE id = $id");
+                $q = $wpdb->get_row("SELECT * FROM 'wp_dsmed_keymaker' WHERE id = $id", ARRAY_A);
+                if($q) {
+                    $result['success'] = false;
+                    $result['content'] = $wpdb->get_results("SELECT * FROM 'wp_dsmed_keymaker' WHERE id = $id", ARRAY_A);
+                    die(json_encode($result));
+                } else {
+                    $result['success'] = true;
+                    $result['content'] = $wpdb->get_results("SELECT * FROM 'wp_dsmed_keymaker' WHERE id = $id", ARRAY_A);
+                    die(json_encode($result));
+                }
+            }
+        }
+
+        if($_SERVER['REQUEST_METHOD'] === "POST") {
+            // добавление строки
+            if($_POST['action'] === 'add_keywords') {
+                if (isset($_POST['query']) && isset($_POST['keywords'])) {
+                    $res = $wpdb->insert('wp_dsmed_keymaker', array(
+                        'query' => $_POST['query'],
+                        'keywords' => $_POST['keywords']
+                    ));
+                    if($res) {
+                        $ans['success'] = true;
+                    } else {
+                        $ans['success'] = false;
+                    }
+                    $ans['content'] = $wpdb->get_results('SELECT * FROM wp_dsmed_keymaker', ARRAY_A);
+                    die(json_encode($ans));
+                }
+            }
+
+            // изменение строки
+            if($_POST['action'] === 'edit_keywords') {
+                if (isset($_POST['id']) && isset($_POST['query']) && isset($_POST['keywords'])) {
+                    $res = $wpdb->update('wp_dsmed_keymaker', array(
+                        'id' => $_POST['id'],
+                        'query' => $_POST['query'],
+                        'keywords' => $_POST['keywords']
+                    ));
+                    if($res) {
+                        $ans['success'] = true;
+                    } else {
+                        $ans['success'] = false;
+                    }
+                    $ans['content'] = $wpdb->get_results('SELECT * FROM wp_dsmed_keymaker', ARRAY_A);
+                    die(json_encode($ans));
+                }
+            }
+        }
     }
 }

@@ -56,7 +56,8 @@
             Chip,
             TextareaAutosize,
             Checkbox,
-            Alert
+            Alert,
+            LinearProgress
         } = MaterialUI
 
         const theme = createMuiTheme({
@@ -99,7 +100,12 @@
             },
         }));
 
-        function KeywordsTable() {
+        function KeywordsTable({
+            strings,
+            setStrings,
+            loading,
+            setLoading
+        }) {
             const classes = useStyles();
 
             return (
@@ -113,6 +119,8 @@
                                 <TableCell>ID</TableCell>
                                 <TableCell>Путь к странице</TableCell>
                                 <TableCell>Ключевые слова</TableCell>
+                                <TableCell></TableCell>
+                                <TableCell></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -120,16 +128,68 @@
                                 <TableCell>1</TableCell>
                                 <TableCell>/pages/hello</TableCell>
                                 <TableCell>one, two, three</TableCell>
+                                <TableCell></TableCell>
+                                <TableCell></TableCell>
+                            </TableRow>
+                            {strings.length !== 0 ? strings.map(item => (
+                            <TableRow>
+                                <TableCell>{item.id}</TableCell>
+                                <TableCell>
+                                    <TextField 
+                                    id="standard-basic" 
+                                    label="Адрес" 
+                                    value={res.query}
+                                    />
+                                </TableCell>
+                                <TableCell>
+                                    <TextField 
+                                    id="standard-basic" 
+                                    label="Ключевые слова" 
+                                    value={res.keywords}
+                                    />
+                                </TableCell>
+                                <TableCell><Button>Изменить</Button></TableCell>
+                                <TableCell><Button>Удалить</Button></TableCell>
+                            </TableRow>
+                            )) : null}
+                            <TableRow>
+                                <TableCell></TableCell>
+                                <TableCell><TextField id="standard-basic" label="Адрес" /></TableCell>
+                                <TableCell><TextField id="standard-basic" label="Ключевые слова" /></TableCell>
+                                <TableCell><Button>Добавить</Button></TableCell>
+                                <TableCell></TableCell>
                             </TableRow>
                         </TableBody>
                     </Table>
+                    {loading === true ? <LinearProgress color="secondary" style={{margin: 20}}/> : null}
                 </TableContainer>
             )
         }
 
         function App() {
+            const [strings, setStrings] = React.useState([])
+            const [loading, setLoading] = React.useState(true)
+
+            React.useEffect( () => {
+                fetch(`${window.location.origin}/?action=get_keywords`)
+                .then( res => res.json() )
+                .then( res => {
+                    console.log(res)
+                    if( res.success === true ) {
+                        setStrings(res.content)
+                    }
+                    setLoading(false)
+                    })
+            }, [])
             return (
-                <KeywordsTable />
+                <div>
+                <KeywordsTable 
+                    strings={strings}
+                    setStrings={setStrings}
+                    loading={loading}
+                    setLoading={setLoading}
+                />
+                </div>
             )
         }
 
