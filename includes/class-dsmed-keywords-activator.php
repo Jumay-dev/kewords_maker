@@ -8,16 +8,16 @@ class Dsmed_keywords_activator {
         global $wpdb;
         $pref = $wpdb->get_blog_prefix();
         $table_name = $pref . 'dsmed_keymaker';
-        $charset_collate = "DEFAULT CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}";
+        $charset_collate = "DEFAULT CHARACTER SET $wpdb->charset COLLATE $wpdb->collate";
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-        $keymaker_table = "CREATE TABLE {$filter_table_name} (
+        $keymaker_table = "CREATE TABLE $table_name (
             id int(11) unsigned NOT NULL auto_increment,
             query varchar(255),
             keywords varchar(255),
             PRIMARY KEY  (id),
             KEY id (id)
-            ) {$charset_collate};";
+            ) $charset_collate;";
 
         dbDelta( $keymaker_table );
         return TRUE;
