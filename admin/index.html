@@ -126,6 +126,8 @@
                         console.log(res)
                         if (res.success) {
                             setLoading(false)
+                            setKeywords('')
+                            setQuery('')
                             setStrings(res.content)
                         }
                     })
@@ -141,6 +143,7 @@
                 fetch(`${window.location.origin}/?action=delete_keywords&id=${id}`)
                 .then( res => res.json() )
                 .then( res => {
+                    console.log(res)
                     setLoading(false)
                     if (res.success) {
                         setStrings(res.content)

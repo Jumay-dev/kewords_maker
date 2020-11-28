@@ -25,12 +25,14 @@ class Dsmed_keywords {
 
     public function run() {
         global $wpdb;
-        $prefix = $wpdb->get_blog_prefix;
+        $prefix = $wpdb->get_blog_prefix();
+        $table_name = $prefix . 'dsmed_keymaker';
+        $dbname = $wpdb->dbname;
 
         if($_SERVER['REQUEST_METHOD'] === "GET") {
             if($_GET['action'] === 'get_keywords') {
                 $result;
-                $ans = $wpdb->get_results("SELECT * FROM wp_dsmed_keymaker", ARRAY_A);
+                $ans = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
                 // die(json_encode($ans));
                 if ($ans) {
                     $result['success'] = true;
@@ -45,16 +47,16 @@ class Dsmed_keywords {
             if($_GET['action'] === 'delete_keywords') {
                 $id = $_GET['id'];
                 $result;
-                $wpdb->query("DELETE FROM wp_dsmed_keymaker WHERE id = $id");
-                $q = $wpdb->get_row("SELECT * FROM 'wp_dsmed_keymaker' WHERE id = $id", ARRAY_A);
+                $wpdb->query("DELETE FROM $table_name WHERE id = $id");
+                $q = $wpdb->get_row("SELECT * FROM $table_name WHERE id = $id", ARRAY_A);
                 if($q) {
                     $result['success'] = false;
-                    $result['content'] = $wpdb->get_results("SELECT * FROM 'wp_dsmed_keymaker' WHERE id = $id", ARRAY_A);
+                    $result['content'] = $wpdb->get_results("SELECT * FROM $table_name WHERE id = $id", ARRAY_A);
                     die(json_encode($result));
                 } else {
-                    $result['success'] = true;
-                    $result['content'] = $wpdb->get_results("SELECT * FROM 'wp_dsmed_keymaker' WHERE id = $id", ARRAY_A);
-                    die(json_encode($result));
+                    $ans['success'] = true;
+                    $ans['content'] = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
+                    die(json_encode($ans));
                 }
             }
         }
@@ -63,13 +65,13 @@ class Dsmed_keywords {
             // добавление строки
             if($_POST['action'] === 'add_keywords') {
                 if (isset($_POST['query']) && isset($_POST['keywords'])) {
-                    $res = $wpdb->insert('wp_dsmed_keymaker', array(
+                    $res = $wpdb->insert($table_name, array(
                         'query' => $_POST['query'],
                         'keywords' => $_POST['keywords']
                     ));
                     if($res) {
                         $ans['success'] = true;
-                        $ans['content'] = $wpdb->get_results('SELECT * FROM wp_dsmed_keymaker', ARRAY_A);
+                        $ans['content'] = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
                         die(json_encode($ans));
                     } else {
                         $ans['success'] = false;
@@ -81,7 +83,7 @@ class Dsmed_keywords {
             // изменение строки
             if($_POST['action'] === 'edit_keywords') {
                 if (isset($_POST['id']) && isset($_POST['query']) && isset($_POST['keywords'])) {
-                    $res = $wpdb->update('wp_dsmed_keymaker', array(
+                    $res = $wpdb->update($table_name, array(
                         'id' => $_POST['id'],
                         'query' => $_POST['query'],
                         'keywords' => $_POST['keywords']
@@ -91,7 +93,7 @@ class Dsmed_keywords {
                     } else {
                         $ans['success'] = false;
                     }
-                    $ans['content'] = $wpdb->get_results('SELECT * FROM wp_dsmed_keymaker', ARRAY_A);
+                    $ans['content'] = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
                     die(json_encode($ans));
                 }
             }
@@ -99,9 +101,11 @@ class Dsmed_keywords {
 
         add_action('wp_head', function() {
             global $wpdb;
+            $prefix = $wpdb->get_blog_prefix();
+            $table_name = $prefix . 'dsmed_keymaker';
             $current_request = $_SERVER['REQUEST_URI'];
             // echo urldecode($current_request);
-            $q_list = $wpdb->get_results('SELECT * FROM wp_dsmed_keymaker', ARRAY_A);
+            $q_list = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
             foreach($q_list as $q_row) {
                 if ($q_row['query'] === urldecode($current_request)) {
                     echo '<meta name="keywords" content="' . $q_row['keywords'] . '" />';
