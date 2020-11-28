@@ -30,7 +30,8 @@ class Dsmed_keywords {
         if($_SERVER['REQUEST_METHOD'] === "GET") {
             if($_GET['action'] === 'get_keywords') {
                 $result;
-                $ans = $wpdb->get_results("SELECT * FROM 'wp_dsmed_keymaker'", ARRAY_A);
+                $ans = $wpdb->get_results("SELECT * FROM wp_dsmed_keymaker", ARRAY_A);
+                // die(json_encode($ans));
                 if ($ans) {
                     $result['success'] = true;
                     $result['content'] = $ans;
@@ -68,11 +69,12 @@ class Dsmed_keywords {
                     ));
                     if($res) {
                         $ans['success'] = true;
+                        $ans['content'] = $wpdb->get_results('SELECT * FROM wp_dsmed_keymaker', ARRAY_A);
+                        die(json_encode($ans));
                     } else {
                         $ans['success'] = false;
+                        die(json_encode($ans));
                     }
-                    $ans['content'] = $wpdb->get_results('SELECT * FROM wp_dsmed_keymaker', ARRAY_A);
-                    die(json_encode($ans));
                 }
             }
 

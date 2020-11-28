@@ -107,6 +107,46 @@
             setLoading
         }) {
             const classes = useStyles();
+            const [keywords, setKeywords] = React.useState('')
+            const [query, setQuery] = React.useState('')
+
+            function sender() {
+                if (keywords !== '' && query !== '') {
+                    setLoading(true)
+                    let data = new FormData()
+                    data.append('action', 'add_keywords')
+                    data.append('query', query)
+                    data.append('keywords', keywords)
+                    fetch(`${window.location.origin}`, {
+                        method: "POST",
+                        body: data
+                    })
+                    .then( res => res.json() )
+                    .then( res => {
+                        console.log(res)
+                        if (res.success) {
+                            setLoading(false)
+                            setStrings(res.content)
+                        }
+                    })
+                }
+            }
+
+            function editString(id) {
+                console.log(id)
+            }
+
+            function deleteString(id) {
+                setLoading(true)
+                fetch(`${window.location.origin}/?action=delete_keywords&id=${id}`)
+                .then( res => res.json() )
+                .then( res => {
+                    setLoading(false)
+                    if (res.success) {
+                        setStrings(res.content)
+                    }
+                })
+            }
 
             return (
                 <TableContainer component={Paper} style={{padding: 20}}>
@@ -138,25 +178,49 @@
                                     <TextField 
                                     id="standard-basic" 
                                     label="Адрес" 
-                                    value={res.query}
+                                    value={item.query}
                                     />
                                 </TableCell>
                                 <TableCell>
                                     <TextField 
                                     id="standard-basic" 
                                     label="Ключевые слова" 
-                                    value={res.keywords}
+                                    value={item.keywords}
                                     />
                                 </TableCell>
-                                <TableCell><Button>Изменить</Button></TableCell>
-                                <TableCell><Button>Удалить</Button></TableCell>
+                                <TableCell>
+                                <Button
+                                onClick={() => editString(item.id)}
+                                >Изменить
+                                </Button>
+                                </TableCell>
+                                <TableCell>
+                                <Button
+                                onClick={() => deleteString(item.id)}
+                                >Удалить
+                                </Button>
+                                </TableCell>
                             </TableRow>
                             )) : null}
                             <TableRow>
                                 <TableCell></TableCell>
-                                <TableCell><TextField id="standard-basic" label="Адрес" /></TableCell>
-                                <TableCell><TextField id="standard-basic" label="Ключевые слова" /></TableCell>
-                                <TableCell><Button>Добавить</Button></TableCell>
+                                <TableCell>
+                                <TextField 
+                                id="standard-basic" 
+                                label="Адрес"
+                                onChange={e => setQuery(e.target.value)}
+                                value={query}
+                                />
+                                </TableCell>
+                                <TableCell>
+                                <TextField 
+                                id="standard-basic" 
+                                label="Ключевые слова"
+                                onChange={e => setKeywords(e.target.value)}
+                                value={keywords}
+                                />
+                                </TableCell>
+                                <TableCell><Button onClick={sender}>Добавить</Button></TableCell>
                                 <TableCell></TableCell>
                             </TableRow>
                         </TableBody>
