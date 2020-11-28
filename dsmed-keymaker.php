@@ -22,26 +22,26 @@ if ( ! defined( 'WPINC' ) ) {
 }
 wp_enqueue_script("jquery");
 
-function activate_dsmed() {
+function activate_dsmed_keywords() {
     require_once plugin_dir_path( __FILE__ ) . 'includes/class-dsmed-keywords-activator.php';
-    Dsmed_keywords_Activator::activate();
+    Dsmed_keywords_activator::activate();
 }
 
-function deactivate_dsmed() {
+function deactivate_dsmed_keywords() {
     require_once plugin_dir_path( __FILE__ ) . 'includes/class-dsmed-keywords-deactivator.php';
-    Dsmed_keywords_Deactivator::deactivate();
+    Dsmed_keywords_deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_dsmed' );
-register_deactivation_hook( __FILE__, 'deactivate_dsmed');
+register_activation_hook( __FILE__, 'activate_dsmed_keywords' );
+register_deactivation_hook( __FILE__, 'deactivate_dsmed_keywords');
 
 
-require plugin_dir_path( __FILE__ ) . 'includes/class-dsmed.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-dsmed-keywords.php';
 
-function run_dsmed() {
+function run_dsmed_keywords() {
 
-	$plugin = new Dsmed();
+	$plugin = new Dsmed_keywords();
 	$plugin->run();
 
 }
-run_dsmed();
+run_dsmed_keywords();
