@@ -13,8 +13,8 @@ class Dsmed_keywords_activator {
 
         $keymaker_table = "CREATE TABLE $table_name (
             id int(11) unsigned NOT NULL auto_increment,
-            query varchar(255),
-            keywords varchar(255),
+            query text(200),
+            keywords text(10000),
             PRIMARY KEY  (id),
             KEY id (id)
             ) $charset_collate;";

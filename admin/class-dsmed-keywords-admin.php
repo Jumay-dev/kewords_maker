@@ -7,8 +7,8 @@ class Dsmed_keywords_admin {
 
     public function options_page() {
         add_options_page(
-            "DS.med keywords",
-            "DS.med keywords",
+            "DS.Med keywords",
+            "DS.Med keywords",
             "manage_options",
             "import_options",
             array($this, 'render')

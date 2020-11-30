@@ -5,11 +5,11 @@
  * @package           DS.med keywords maker
  *
  * @wordpress-plugin
- * Plugin Name:       DS.med keywords
+ * Plugin Name:       DS.Med keywords
  * Plugin URI:        https://ds-med.ru/
  * Description:       Добавляет keywords к указаным путям
  * Version:           0.0.1
- * Author:            Jumay-dev
+ * Author:            Jumay-dev (DS.Med)
  * Author URI:        http://ds-med.ru/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt

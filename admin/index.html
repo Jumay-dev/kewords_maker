@@ -75,6 +75,9 @@
                 default: '#fff',
                 },
             },
+            input: {
+                height: 100
+            }
         });
 
         const useStyles = makeStyles((theme) => ({
@@ -193,21 +196,22 @@
                             onChange={(e) => setLocalQuery(e.target.value)}
                             />
                         </TableCell>
-                        <TableCell>
+                        <TableCell style={{width: "40%"}}>
                             <TextField 
                             id="standard-basic" 
                             label="Ключевые слова" 
                             value={localKeywords}
+                            fullWidth
                             onChange={(e) => setLocalKeywords(e.target.value)}
                             />
                         </TableCell>
-                        <TableCell>
+                        <TableCell style={{width: "10%"}}>
                         <Button
                         onClick={() => editString()}
                         >Изменить
                         </Button>
                         </TableCell>
-                        <TableCell>
+                        <TableCell style={{width: "10%"}}>
                         <Button
                         onClick={() => deleteString()}
                         >Удалить
@@ -251,9 +255,9 @@
                                 setStrings={setStrings}
                             />
                             )) : null}
-                            <TableRow>
+                            <TableRow >
                                 <TableCell></TableCell>
-                                <TableCell>
+                                <TableCell style={{width: "20%"}}>
                                 <TextField 
                                 id="standard-basic" 
                                 label="Адрес"
@@ -261,15 +265,16 @@
                                 value={query}
                                 />
                                 </TableCell>
-                                <TableCell>
-                                <TextField 
-                                id="standard-basic" 
-                                label="Ключевые слова"
-                                onChange={e => setKeywords(e.target.value)}
-                                value={keywords}
-                                />
+                                <TableCell style={{width: "50%"}}>
+                                    <TextField 
+                                    id="standard-basic" 
+                                    label="Ключевые слова"
+                                    onChange={e => setKeywords(e.target.value)}
+                                    value={keywords}
+                                    fullWidth
+                                    />
                                 </TableCell>
-                                <TableCell><Button onClick={sender}>Добавить</Button></TableCell>
+                                <TableCell style={{width: "10%"}}><Button onClick={sender}>Добавить</Button></TableCell>
                                 <TableCell></TableCell>
                             </TableRow>
                         </TableBody>

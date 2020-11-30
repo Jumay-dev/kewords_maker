@@ -9,7 +9,7 @@ class Dsmed_keywords_deactivator {
         $charset_collate = "DEFAULT CHARACTER SET $wpdb->charset COLLATE $wpdb->collate";
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-        $delete_keymaker_table = "DROP TABLE '$table_name'";
-        $wpdb->query($delete_keymaker_table);
+        // $delete_keymaker_table = "DROP TABLE '$table_name'";
+        // $wpdb->query($delete_keymaker_table);
     }
 }
